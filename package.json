@@ -1,0 +1,42 @@
+{
+  "name": "react-wb-imageviewer",
+  "version": "0.0.1",
+  "description": "Images viewer is a react component use in mobile website App, that function same as Weibo native viewer.",
+  "main": "./dist/index.umd.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "webpack --mode production",
+    "test": "echo \"no test\" && exit 0",
+    "watch": "webpack --watch"
+  },
+  "author": "SystemLight",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SystemLight/react-wb-imageviewer/issues"
+  },
+  "homepage": "https://github.com/SystemLight/react-wb-imageviewer",
+  "keywords": [
+    "Images",
+    "viewer",
+    "Weibo",
+    "图片查看",
+    "react"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.9.4",
+    "@types/react": "^16.9.34",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.8.2",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "core-js": "^3.6.4",
+    "react": "^16.13.1"
+  }
+}
