@@ -10,7 +10,7 @@
     "target": "esNext",
     "moduleResolution": "node",
     "strict": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "module": "esNext",
     "resolveJsonModule": false,
     "allowJs": false,
@@ -21,6 +21,11 @@
     "skipLibCheck": true,
     "removeComments": true,
     "sourceMap": false,
-    "noEmit": false
+    "noEmit": false,
+    "outDir": "./dist/",
+    "declaration": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   }
 }

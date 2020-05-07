@@ -6,6 +6,7 @@ module.exports = function (api) {
             "@babel/env",
             {
                 targets: {
+                    node: "8",
                     ie: "10",
                     edge: "17",
                     firefox: "60",
