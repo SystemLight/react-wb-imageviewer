@@ -2,12 +2,10 @@ module.exports = function (api) {
     api.cache(true);
 
     const presets = [
-        "@babel/react",
         [
             "@babel/env",
             {
                 targets: {
-                    node: "8",
                     ie: "10",
                     edge: "17",
                     firefox: "60",
@@ -21,7 +19,8 @@ module.exports = function (api) {
                     "proposals": true,
                 }
             },
-        ]
+        ],
+        "@babel/react"
     ];
     const plugins = [];
 

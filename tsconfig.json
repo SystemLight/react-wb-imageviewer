@@ -21,11 +21,6 @@
     "skipLibCheck": true,
     "removeComments": true,
     "sourceMap": false,
-    "noEmit": false,
-    "outDir": "./dist/",
-    "declaration": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "noEmit": false
   }
 }
