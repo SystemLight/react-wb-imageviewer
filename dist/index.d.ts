@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import './webViewer.less';
-export declare function WbViewer(props: {
+import './index.less';
+export declare function WbImageViewer(props: {
     src: string;
     visibility: boolean;
     onClose: () => void;

@@ -1,37 +1,21 @@
-# esnext-webpack
+# react-wb-imageviewer
 
-浏览器模块库开发模版
+基于react的一个超级简易的移动端图片查看器，致力于效仿微博效果。
 
-## 技术栈
+### 安装
 
-#### 托管平台
+```
+npm i react-wb-imageviewer
+```
 
-- [x] github
+### 使用
 
-#### 服务器
+```
+import {WbImageViewer} from 'react-wb-imageviewer';
 
-- [ ] 待写入
-    - [ ] 待写入
-
-#### 数据库
-
-- [ ] 待写入
-
-#### 后端
-
-- [ ] nodejs8
-    - [ ] koa2
-- [x] webpack
-- [x] typescript
-
-#### 前端
-
-- [ ] 待写入
-
-## 项目功能实现
-
-- [ ] 1.待写入
-
-## 参考资料
-
-#### 1. 
+<WbImageViewer src={"https://zos.alipayobjects.com/rmsportal/hqQWgTXdrlmVVYi.jpg"}
+               visibility={visibility}
+               onClose={() => {
+                   setVisibility(false)
+               }}/>
+```

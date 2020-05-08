@@ -1,9 +1,9 @@
-import './webViewer.less';
+import './index.less';
 
 import React, {useState, useRef, useEffect} from 'react';
 
 
-export function WbViewer(props: {
+export function WbImageViewer(props: {
     src: string,
     visibility: boolean,
     onClose: () => void

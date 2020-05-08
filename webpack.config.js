@@ -14,7 +14,7 @@ module.exports = (env, argv) => {
             extensions: [".js", ".ts", ".tsx", ".jsx"]
         },
         entry: {
-            "index": "./src/index.js"
+            "index": "./src/index.tsx"
         },
         output: {
             filename: "[name].umd.js",
@@ -24,25 +24,14 @@ module.exports = (env, argv) => {
         },
         externals: {
             react: {
-                root: 'React',
-                commonjs2: 'react',
-                commonjs: 'react',
-                amd: 'react'
-            },
-            'react-dom': {
-                root: 'ReactDOM',
-                commonjs2: 'react-dom',
-                commonjs: 'react-dom',
-                amd: 'react-dom'
-            },
+                root: "React",
+                commonjs2: "react",
+                commonjs: "react",
+                amd: "react"
+            }
         },
         module: {
             rules: [
-                {
-                    test: /^(?!.*\.module).*\.less$/,
-                    exclude: /(node_modules|bower_components)\/(?!antd)/,
-                    use: ["style-loader", "css-loader", "less-loader"]
-                },
                 {
                     test: /\.jsx?$/,
                     exclude: /(node_modules|bower_components)/,
@@ -53,6 +42,11 @@ module.exports = (env, argv) => {
                     exclude: /(node_modules|bower_components)/,
                     loader: 'babel-loader!ts-loader'
                 },
+                {
+                    test: /^(?!.*\.module).*\.less$/,
+                    exclude: /(node_modules|bower_components)\/(?!antd)/,
+                    use: ["style-loader", "css-loader", "less-loader"]
+                }
             ]
         },
         plugins: [

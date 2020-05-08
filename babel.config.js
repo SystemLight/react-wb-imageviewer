@@ -21,7 +21,7 @@ module.exports = function (api) {
                 }
             },
         ],
-        "@babel/react"
+        "@babel/react",
     ];
     const plugins = [];
 

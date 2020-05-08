@@ -10,7 +10,7 @@
     "target": "esNext",
     "moduleResolution": "node",
     "strict": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "module": "esNext",
     "resolveJsonModule": false,
     "allowJs": false,
