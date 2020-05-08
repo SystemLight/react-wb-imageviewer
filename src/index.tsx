@@ -1,33 +1,27 @@
-import './wbViewer.less';
+import './index.less';
 
-import React, {useEffect, useRef, useState} from 'react';
-import ReactDOM from 'react-dom';
+import React, {useState, useRef, useEffect} from 'react';
 
-let image = "https://wx1.sinaimg.cn/orj360/7eb24ba3ly1geijqaz709j20j60yi75w.jpg";
 
-function throttle(fn) {
-    let flag = true;
-    return (e) => {
-        if (flag) {
-            flag = false;
-            let timer = setTimeout(() => {
-                fn(e.touches);
-                flag = true;
-            }, 300);
-        }
-    }
-}
-
-function WbViewer(props) {
+export function WbImageViewer(props: {
+    src: string,
+    visibility: boolean,
+    onClose: () => void
+}) {
     let {src, visibility, onClose} = props;
     let [visibleStyle, setVisibleStyle] = useState("none");
     let imageOffset = useRef({x: 0, y: 0});
     let tapStart = useRef({x: 0, y: 0});
     let tapFlag = useRef(false);
+    let imgDom = useRef<HTMLImageElement | null>(null);
 
     useEffect(() => {
         let eve = function () {
             tapFlag.current = false;
+            if (imgDom.current) {
+                imgDom.current.style.transform = `translate(0px,0px)`;
+            }
+            imageOffset.current = {x: 0, y: 0};
         };
         document.addEventListener("touchend", eve);
         return () => {
@@ -60,7 +54,7 @@ function WbViewer(props) {
                  onClose && onClose();
              }}>
             <div className="wbv-modal">
-                <img src={src} alt="大图"
+                <img ref={imgDom} src={src} alt="大图"
                      onTouchStart={(e) => {
                          tapFlag.current = true;
                          tapStart.current = {
@@ -68,49 +62,19 @@ function WbViewer(props) {
                              y: e.touches[0].clientY
                          };
                      }}
-                     onTouchMove={throttle((touches) => {
+                     onTouchMove={(e) => {
                          if (tapFlag.current) {
                              let {x, y} = tapStart.current;
                              let {x: ox, y: oy} = imageOffset.current;
-                             // console.log(touches)
-                             // ox += e.touches[0].clientX - x;
-                             // oy += e.touches[0].clientY - y;
-                             // e.target.style.transform = `translate(${ox}px,${oy}px)`;
-                             // imageOffset.current = {x: ox, y: oy};
+                             ox += e.touches[0].clientX - x;
+                             oy += e.touches[0].clientY - y;
+                             (e.target as HTMLImageElement).style.transform = `translate(${ox}px,${oy}px)`;
+                             tapStart.current = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+                             imageOffset.current = {x: ox, y: oy};
                          }
-                     })}
+                     }}
                 />
             </div>
         </div>
     )
 }
-
-function App(props) {
-    let [visible, setVisible] = useState(false);
-
-    return (
-        <>
-            <div style={{width: 100, height: 100}}>
-                <div className="wbv-img">
-                    <img src={image} alt="图片" style={{width: "100%"}} onClick={() => {
-                        setVisible(true);
-                    }}/>
-                </div>
-                <ul>
-                    {new Array(200).fill(0).map((v, i) => {
-                        return <li key={i} style={{height: 200, borderBottom: "1px solid red"}}>第{i}个元素</li>
-                    })}
-                </ul>
-                <WbViewer src={[image]} visibility={visible} onClose={() => {
-                    setVisible(false);
-                }}/>
-            </div>
-        </>
-    );
-}
-
-ReactDOM.render(
-    // render中尽量不要放置其它组件或page，render中主要放置全局元组件
-    <App/>
-    , document.getElementById('main')
-);
