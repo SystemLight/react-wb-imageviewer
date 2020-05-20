@@ -1,7 +1,7 @@
 const ph = require("path");
 
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = (env, argv) => {
     let workEnv = argv.mode;
@@ -10,11 +10,21 @@ module.exports = (env, argv) => {
         mode: workEnv,
         target: "web",
         context: __dirname,
+        devServer: {
+            contentBase: './dist',
+            index: 'index.html',
+            openPage: '',
+            inline: true,
+            historyApiFallback: true,
+            hot: false,
+            hotOnly: false,
+            open: true
+        },
         resolve: {
             extensions: [".js", ".ts", ".tsx", ".jsx"]
         },
         entry: {
-            "index": "./src/index.tsx"
+            "index": "./src/index.js"
         },
         output: {
             filename: "[name].umd.js",
@@ -22,13 +32,20 @@ module.exports = (env, argv) => {
             libraryTarget: 'umd2',
             globalObject: 'this'
         },
+        // externals: [nodeExternals()],
         externals: {
-            react: {
-                root: "React",
-                commonjs2: "react",
-                commonjs: "react",
-                amd: "react"
-            }
+            // react: {
+            //     root: "React",
+            //     commonjs2: "react",
+            //     commonjs: "react",
+            //     amd: "react"
+            // },
+            // "react-dom": {
+            //     root: "ReactDOM",
+            //     commonjs2: "react-dom",
+            //     commonjs: "react-dom",
+            //     amd: "react-dom"
+            // }
         },
         module: {
             rules: [
@@ -51,6 +68,7 @@ module.exports = (env, argv) => {
         },
         plugins: [
             new CleanWebpackPlugin(),
+            new HtmlWebpackPlugin()
         ]
     }
 };

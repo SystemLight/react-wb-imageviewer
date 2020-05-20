@@ -1,4 +1,4 @@
-import './index.less';
+import './style.less';
 
 import React, {useState, useRef, useEffect} from 'react';
 
