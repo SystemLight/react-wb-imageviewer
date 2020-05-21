@@ -1,10 +1,10 @@
 export class Transform2D {
 
     public matchMatrix = /matrix\((.*?)\)/;
-    public matchTranslate = /translate\((-?[\d\\.]*)px,(-?[\d\\.]*)px\)/;
+    public matchTranslate = /translate\((-?[\d\\.]*)px *, *(-?[\d\\.]*)px\)/;
     public matchScale = /scale\((-?[\d\\.]*)\)/;
     public matchRotate = /rotate\((-?[\d\\.]*)deg\)/;
-    public matchSkew = /skew\((-?[\d\\.]*)deg,(-?[\d\\.]*)deg\)/;
+    public matchSkew = /skew\((-?[\d\\.]*)deg *, *(-?[\d\\.]*)deg\)/;
 
     constructor(public el: HTMLElement) {
     }
@@ -17,8 +17,13 @@ export class Transform2D {
         return angle * Math.PI / 180;
     }
 
+    reset() {
+        this.el.style.transform = "";
+        return this;
+    }
+
     transform() {
-        return this.el.style.transform.replace(/ /g, "");
+        return this.el.style.transform;
     }
 
     setTransform(result: RegExpMatchArray | null, val: string) {
@@ -39,59 +44,77 @@ export class Transform2D {
         }
     }
 
-    setMatrix(matrix: Array<number>) {
+    setMatrix(matrix: Array<number> = [1, 0, 0, 1, 0, 0]) {
         return this.setTransform(this.transform().match(this.matchMatrix), ` matrix(${matrix.join(",")}) `);
     }
 
-    getTranslate() {
+    getTranslate(): [number, number, RegExpMatchArray | null] {
         let result = this.transform().match(this.matchTranslate);
         if (result) {
-            return [result[1], result[2]];
+            return [Number(result[1]), Number(result[2]), result];
         } else {
-            return [0, 0];
+            return [0, 0, null];
         }
     }
 
-    setTranslate(x: number, y: number) {
-        return this.setTransform(this.transform().match(this.matchTranslate), ` translate(${x}px,${y}px) `);
+    setTranslate(x: number = 0, y: number = 0, relative: boolean = false) {
+        let result = this.getTranslate();
+        if (relative) {
+            x += result[0];
+            y += result[1];
+        }
+        return this.setTransform(result[2], ` translate(${x}px,${y}px) `);
     }
 
-    getScale() {
+    getScale(): [number, RegExpMatchArray | null] {
         let result = this.transform().match(this.matchScale);
         if (result) {
-            return [result[1]];
+            return [Number(result[1]), result];
         } else {
-            return [0];
+            return [0, null];
         }
     }
 
-    setScale(sca: number) {
-        return this.setTransform(this.transform().match(this.matchScale), ` scale(${sca}) `);
+    setScale(sca: number = 1, relative: boolean = false) {
+        let result = this.getScale();
+        if (relative) {
+            sca *= result[0];
+        }
+        return this.setTransform(result[1], ` scale(${sca}) `);
     }
 
-    getRotate() {
+    getRotate(): [number, RegExpMatchArray | null] {
         let result = this.transform().match(this.matchRotate);
         if (result) {
-            return [result[1]];
+            return [Number(result[1]), result];
         } else {
-            return [0];
+            return [0, null];
         }
     }
 
-    setRotate(angle: number) {
-        return this.setTransform(this.transform().match(this.matchRotate), ` rotate(${angle}deg) `);
+    setRotate(angle: number = 0, relative: boolean = false) {
+        let result = this.getRotate();
+        if (relative) {
+            angle += result[0];
+        }
+        return this.setTransform(result[1], ` rotate(${angle}deg) `);
     }
 
-    getSkew() {
+    getSkew(): [number, number, RegExpMatchArray | null] {
         let result = this.transform().match(this.matchSkew);
         if (result) {
-            return [result[1], result[2]];
+            return [Number(result[1]), Number(result[2]), result];
         } else {
-            return [0, 0];
+            return [0, 0, null];
         }
     }
 
-    setSkew(xAngle: number, yAngle: number = 0) {
-        return this.setTransform(this.transform().match(this.matchSkew), ` skew(${xAngle}deg,${yAngle}deg) `);
+    setSkew(xAngle: number = 0, yAngle: number = 0, relative: boolean = false) {
+        let result = this.getSkew();
+        if (relative) {
+            xAngle += result[0];
+            yAngle += result[1];
+        }
+        return this.setTransform(result[2], ` skew(${xAngle}deg,${yAngle}deg) `);
     }
 }

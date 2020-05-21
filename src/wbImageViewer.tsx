@@ -1,79 +1,109 @@
 import './style.less';
 
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useRef, useEffect, forwardRef, useState} from 'react';
+
+import {useRollingPenetration} from "./utils/hook";
+import {Transform2D} from "./utils/transform2d";
+import {TouchGesture} from "./utils/touch";
 
 
-export function WbImageViewer(props: {
+type WbImageViewerProps = {
     src: string,
     visibility: boolean,
     onClose: () => void
-}) {
-    let {src, visibility, onClose} = props;
-    let [visibleStyle, setVisibleStyle] = useState("none");
-    let imageOffset = useRef({x: 0, y: 0});
-    let tapStart = useRef({x: 0, y: 0});
-    let tapFlag = useRef(false);
-    let imgDom = useRef<HTMLImageElement | null>(null);
+};
 
-    useEffect(() => {
-        let eve = function () {
-            tapFlag.current = false;
-            if (imgDom.current) {
-                imgDom.current.style.transform = `translate(0px,0px)`;
-            }
-            imageOffset.current = {x: 0, y: 0};
-        };
-        document.addEventListener("touchend", eve);
-        return () => {
-            document.removeEventListener("touchend", eve)
-        }
-    }, []);
-    useEffect(() => {
-        if (visibility) {
-            let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-            document.body.style.cssText += 'position:fixed;top:-' + scrollTop + 'px;';
-            setVisibleStyle("block");
-        } else {
-            let body = document.body;
-            let top = body.style.top;
-            body.style.position = '';
-            body.style.top = '';
-            document.body.scrollTop = document.documentElement.scrollTop = -parseInt(top);
-        }
-    }, [visibility]);
+type LoadingImgProps = {
+    src?: string | null | "",
+    alt?: string,
+    loadingHeight: number | string
+};
+
+
+function Loading(props: { className?: string }) {
+    return (
+        <div className={"loading " + (props.className || "")}>
+            <span/>
+            <span/>
+            <span/>
+            <span/>
+            <span/>
+        </div>
+    );
+}
+
+
+const LoadingImg = forwardRef<HTMLImageElement, LoadingImgProps>(function (props, ref) {
+    let {src, loadingHeight} = props;
+
+    let [loadComplete, setLoadComplete] = useState(false);
 
     return (
-        <div className={"wbv-wrap " + (visibility ? "visible" : "un-visible")}
-             style={{display: visibleStyle}}
+        <div className="loading-img" style={(loadComplete ? {} : {height: loadingHeight})}>
+            {loadComplete ? "" : [
+                <Loading key="loading" className="loading-icon"/>,
+                <div key="mask" className="loading-mask"/>
+            ]}
+            {src ? <img ref={ref} alt={"图片"} src={src} onLoad={() => {
+                setLoadComplete(true);
+            }}/> : ""}
+        </div>
+    )
+});
+
+
+export function WbImageViewer(props: WbImageViewerProps) {
+    let {src, visibility, onClose} = props;
+
+    // 防止滚动穿透
+    let [visibleStyle, setVisibleStyle] = useRollingPenetration(visibility);
+
+    let imgDom = useRef<HTMLImageElement | null>(null);
+    let wrapDom = useRef<HTMLDivElement | null>(null);
+    let tg = useRef<TouchGesture>();
+
+    useEffect(() => {
+        if (src) {
+            tg.current && tg.current.destroy();
+            tg.current = new TouchGesture((imgDom.current as HTMLImageElement));
+            let t2d = new Transform2D((imgDom.current as HTMLImageElement));
+            t2d.setTranslate().setScale().setRotate();
+
+            tg.current.on("doubleTap", function (e) {
+                // onClose();
+                t2d.setScale(0.5, true);
+            });
+            tg.current.on("pressMove", function ({moveDistance: {x, y}}) {
+                t2d.setTranslate(x, y, true);
+            });
+            tg.current.on("tapUp", function () {
+                if (wrapDom.current && imgDom.current) {
+                    let [x, y] = t2d.getTranslate();
+                    let [sca] = t2d.getScale();
+                    let boundaryX = wrapDom.current.offsetWidth / 2 - imgDom.current.offsetWidth * sca / 2;
+                }
+            });
+            tg.current.on("pinch", function (e) {
+
+            });
+
+            return () => {
+                tg.current && tg.current.destroy();
+            }
+        }
+    }, [src]);
+
+
+    return (
+        <div className={"wbv-wrap " + (visibility ? "visible" : "un-visible")} style={{display: visibleStyle}}
+             ref={wrapDom}
              onAnimationEnd={(e) => {
                  if (!visibility) {
                      setVisibleStyle("none");
                  }
-             }}
-             onClick={() => {
-                 onClose && onClose();
              }}>
             <div className="wbv-modal">
-                <img ref={imgDom} src={src} alt="大图"
-                     onTouchStart={(e) => {
-                         tapFlag.current = true;
-                         tapStart.current = {
-                             x: e.touches[0].clientX,
-                             y: e.touches[0].clientY
-                         };
-                     }}
-                     onTouchMove={(e) => {
-                         if (tapFlag.current) {
-                             let {x, y} = tapStart.current;
-                             let {x: ox, y: oy} = imageOffset.current;
-                             ox += e.touches[0].clientX - x;
-                             oy += e.touches[0].clientY - y;
-                             (e.target as HTMLImageElement).style.transform = `translate(${ox}px,${oy}px)`;
-                             tapStart.current = {x: e.touches[0].clientX, y: e.touches[0].clientY};
-                             imageOffset.current = {x: ox, y: oy};
-                         }
-                     }}
-                />
+                <LoadingImg ref={imgDom} src={src} loadingHeight={300}/>
             </div>
         </div>
     )
