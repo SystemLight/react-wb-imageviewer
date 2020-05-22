@@ -24,7 +24,7 @@ module.exports = (env, argv) => {
             extensions: [".js", ".ts", ".tsx", ".jsx"]
         },
         entry: {
-            "index": "./src/index.js"
+            "index": "./src/index.ts"
         },
         output: {
             filename: "[name].umd.js",
@@ -34,18 +34,18 @@ module.exports = (env, argv) => {
         },
         // externals: [nodeExternals()],
         externals: {
-            // react: {
-            //     root: "React",
-            //     commonjs2: "react",
-            //     commonjs: "react",
-            //     amd: "react"
-            // },
-            // "react-dom": {
-            //     root: "ReactDOM",
-            //     commonjs2: "react-dom",
-            //     commonjs: "react-dom",
-            //     amd: "react-dom"
-            // }
+            react: {
+                root: "React",
+                commonjs2: "react",
+                commonjs: "react",
+                amd: "react"
+            },
+            "react-dom": {
+                root: "ReactDOM",
+                commonjs2: "react-dom",
+                commonjs: "react-dom",
+                amd: "react-dom"
+            }
         },
         module: {
             rules: [
@@ -68,7 +68,7 @@ module.exports = (env, argv) => {
         },
         plugins: [
             new CleanWebpackPlugin(),
-            new HtmlWebpackPlugin()
+            // new HtmlWebpackPlugin()
         ]
     }
 };

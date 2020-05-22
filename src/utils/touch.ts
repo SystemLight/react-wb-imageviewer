@@ -31,6 +31,7 @@ export class TouchGesture {
 
     private startPoint: point = {x: 0, y: 0};
     private startPoint2: point = {x: 0, y: 0};
+    private startMiddlePoint: point = {x: 0, y: 0};
     private lastMovePoint: point = {x: 0, y: 0};
     private lastTapEndPoint: point = {x: 0, y: 0};
 
@@ -57,8 +58,7 @@ export class TouchGesture {
         document.addEventListener("touchend", this._touchend);
     }
 
-    private _touchstart = (e: TouchEvent) => {
-        this._tapDown(e);
+    private _touchstart = (e: ExtendTouchEvent) => {
         if (e.targetTouches.length === 1) {
             // 按下且只有一根手指
             this.touchLength = 1;
@@ -72,18 +72,26 @@ export class TouchGesture {
             this.startPoint2 = {x: e.targetTouches[1].clientX, y: e.targetTouches[1].clientY};
             this.startSpace = this.getMove(this.startPoint, this.startPoint2);
             this.startAngle = this.getAngle(this.startSpace);
+            this.startMiddlePoint = this.getMiddlePoint(this.startPoint, this.startPoint2);
             this.touchLength = this.startSpace.d < 5 ? 0 : 2;
         }
+        e.startMiddlePoint = this.startMiddlePoint;
+        e.touchLength = this.touchLength;
+        this._tapDown(e);
     }
 
-    private _touchmove = (e: TouchEvent) => {
+    private _touchmove = (e: ExtendTouchEvent) => {
         clearTimeout(this.longTimer);
         let nowPoint: point = {x: e.touches[0].clientX, y: e.touches[0].clientY};
         if (this.touchLength === 1) {
             // 按下且只有一根手指
             let moveDistance = this.getMove(nowPoint, this.lastMovePoint);
             let startDistance = this.getMove(nowPoint, this.startPoint);
-            this._pressMove({...e, moveDistance, startDistance});
+
+            e.moveDistance = moveDistance;
+            e.startDistance = startDistance;
+            this._pressMove(e);
+
             this.lastMovePoint = nowPoint;
             this.moveFlag = true;
         } else if (this.touchLength === 2) {
@@ -93,15 +101,14 @@ export class TouchGesture {
             let pointAngle = this.getAngle(pointSpace);
             let scale = pointSpace.d / this.startSpace.d;
 
-            this._pinch({
-                ...e,
-                pointAngle,
-                startAngle: this.startAngle,
-                pointSpace,
-                startSpace: this.startSpace,
-                scale,
-                rotate: this.radian2angle(pointAngle - this.startAngle)
-            });
+            e.startMiddlePoint = this.startMiddlePoint;
+            e.pointAngle = pointAngle;
+            e.startAngle = this.startAngle;
+            e.pointSpace = pointSpace;
+            e.startSpace = this.startSpace;
+            e.scale = scale;
+            e.rotate = this.radian2angle(pointAngle - this.startAngle);
+            this._pinch(e);
         }
     }
 
@@ -221,6 +228,10 @@ export class TouchGesture {
     public getAngle(move: move) {
         let {x, y} = move;
         return Math.atan2(y, x);
+    }
+
+    public getMiddlePoint(p1: point, p2: point) {
+        return {x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2};
     }
 
     public radian2angle(radian: number) {

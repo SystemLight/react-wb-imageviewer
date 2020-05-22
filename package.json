@@ -1,11 +1,11 @@
 {
   "name": "react-wb-imageviewer",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Images viewer is a react component use in mobile website App, that function same as Weibo native viewer.",
   "main": "./dist/index.umd.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "start": "webpack-dev-server --open --host 192.168.52.158",
     "build": "webpack --mode production",
     "test": "echo \"no test\" && exit 0",
     "watch": "webpack --watch"

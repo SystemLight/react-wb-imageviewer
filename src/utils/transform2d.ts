@@ -1,3 +1,13 @@
+interface relativeFunc<T, P> {
+    (val: T): P
+}
+
+
+function acc(val: number) {
+    return val.toFixed(2);
+}
+
+
 export class Transform2D {
 
     public matchMatrix = /matrix\((.*?)\)/;
@@ -20,6 +30,16 @@ export class Transform2D {
     reset() {
         this.el.style.transform = "";
         return this;
+    }
+
+    origin() {
+        return this.el.style.transformOrigin.replace("px", "").split(" ").map(Number);
+    }
+
+    setOrigin(x: number | string, y: number | string) {
+        x = typeof x === "number" ? x + "px" : x;
+        y = typeof y === "number" ? y + "px" : y;
+        this.el.style.transformOrigin = `${x} ${y}`;
     }
 
     transform() {
@@ -45,6 +65,7 @@ export class Transform2D {
     }
 
     setMatrix(matrix: Array<number> = [1, 0, 0, 1, 0, 0]) {
+        let newMatrix = matrix.map(acc);
         return this.setTransform(this.transform().match(this.matchMatrix), ` matrix(${matrix.join(",")}) `);
     }
 
@@ -63,7 +84,7 @@ export class Transform2D {
             x += result[0];
             y += result[1];
         }
-        return this.setTransform(result[2], ` translate(${x}px,${y}px) `);
+        return this.setTransform(result[2], ` translate(${acc(x)}px,${acc(y)}px) `);
     }
 
     getScale(): [number, RegExpMatchArray | null] {
@@ -71,16 +92,18 @@ export class Transform2D {
         if (result) {
             return [Number(result[1]), result];
         } else {
-            return [0, null];
+            return [1, null];
         }
     }
 
-    setScale(sca: number = 1, relative: boolean = false) {
+    setScale(sca: number = 1, relative: number | relativeFunc<Array<number>, number> = 1) {
         let result = this.getScale();
-        if (relative) {
-            sca *= result[0];
+        if (typeof relative === "number") {
+            sca *= relative;
+        } else {
+            sca = relative([result[0], sca]);
         }
-        return this.setTransform(result[1], ` scale(${sca}) `);
+        return this.setTransform(result[1], ` scale(${acc(sca)}) `);
     }
 
     getRotate(): [number, RegExpMatchArray | null] {
@@ -97,7 +120,7 @@ export class Transform2D {
         if (relative) {
             angle += result[0];
         }
-        return this.setTransform(result[1], ` rotate(${angle}deg) `);
+        return this.setTransform(result[1], ` rotate(${acc(angle)}deg) `);
     }
 
     getSkew(): [number, number, RegExpMatchArray | null] {
@@ -115,6 +138,6 @@ export class Transform2D {
             xAngle += result[0];
             yAngle += result[1];
         }
-        return this.setTransform(result[2], ` skew(${xAngle}deg,${yAngle}deg) `);
+        return this.setTransform(result[2], ` skew(${acc(xAngle)}deg,${acc(yAngle)}deg) `);
     }
 }
