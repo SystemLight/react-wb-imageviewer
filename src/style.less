@@ -1,0 +1,108 @@
+@keyframes pop-up {
+  0% {
+    opacity: 0;
+    transform: scale(.5);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop-down {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(.5);
+  }
+}
+
+@keyframes load {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.loading {
+  .loop-span(@num:1) when (@num<6) {
+    &:nth-child(@{num}) {
+      animation-delay: @num*0.13s;
+    }
+    .loop-span(@num+1);
+  }
+
+  span {
+    opacity: 0;
+    display: inline-block;
+    vertical-align: top;
+    width: 15px;
+    height: 15px;
+    margin-left: 15px;
+    background-color: #3D3D3D;
+    border-radius: 50%;
+    animation: load 1.04s ease infinite;
+
+    .loop-span();
+  }
+}
+
+.loading-img {
+  position: relative;
+
+  .loading-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+  }
+
+  .loading-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, .6);
+  }
+
+  img {
+    font-size: 0;
+    vertical-align: top;
+  }
+
+}
+
+.wbv-wrap {
+  position: fixed;
+  display: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, .6);
+
+  &.visible {
+    animation: pop-up 300ms ease-in-out;
+  }
+
+  &.un-visible {
+    animation: pop-down 300ms ease-in-out;
+  }
+
+  .wbv-modal {
+    img {
+      width: 100%;
+    }
+  }
+}

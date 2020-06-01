@@ -1,7 +1,4 @@
-/// <reference types="react" />
-import './index.less';
-export declare function WbImageViewer(props: {
-    src: string;
-    visibility: boolean;
-    onClose: () => void;
-}): JSX.Element;
+import { WbImageViewer, Loading, LoadingImg } from "./wbImageViewer";
+import { TouchGesture } from "./utils/touch";
+import { Transform2D } from "./utils/transform2d";
+export { WbImageViewer, Loading, LoadingImg, TouchGesture, Transform2D };
