@@ -112,7 +112,7 @@ class Webpack5RecommendConfig {
       {
         emitCss: false,
         emitHtml: false,
-        libraryName: libraryName,
+        libraryName: libraryName || true,
         isSplitChunk: false,
         enableHash: false
       },

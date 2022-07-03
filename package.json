@@ -21,8 +21,8 @@
     "图片查看"
   ],
   "description": "Images viewer is a react component use in mobile website App, that function same as Weibo native viewer.",
-  "main": "./dist/main.umd.js",
-  "types": "./dist/main.d.ts",
+  "main": "dist/main.umd.js",
+  "types": "dist/main.d.ts",
   "files": [
     "dist/"
   ],
