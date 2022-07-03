@@ -107,6 +107,34 @@ class Webpack5RecommendConfig {
     this._config = {}
   }
 
+  static buildLibraryOptions(libraryName) {
+    return [
+      {
+        emitCss: false,
+        emitHtml: false,
+        libraryName: libraryName,
+        isSplitChunk: false,
+        enableHash: false
+      },
+      {emitPublic: false},
+      null
+    ]
+  }
+
+  static buildReactLibraryOptions(componentName) {
+    let options = Webpack5RecommendConfig.buildLibraryOptions(componentName)
+    options[0].externals = ['react']
+    return options
+  }
+
+  static newLibrary(env, argv, libraryName) {
+    return new Webpack5RecommendConfig(env, argv, Webpack5RecommendConfig.buildLibraryOptions(libraryName))
+  }
+
+  static newReactLibrary(env, argv, componentName) {
+    return new Webpack5RecommendConfig(env, argv, Webpack5RecommendConfig.buildReactLibraryOptions(componentName))
+  }
+
   build(buildCallback) {
     // webpack5配置文档：https://webpack.js.org/configuration/
     this.buildBasic()
@@ -659,20 +687,12 @@ class Webpack5RecommendConfig {
   }
 }
 
-module.exports = (env, argv) => new Webpack5RecommendConfig(env, argv, [
-  {
-    emitCss: false,
-    emitHtml: false,
-    libraryName: 'WbImageViewer',
-    externals: ['react'],
-    isSplitChunk: false,
-    enableHash: false
-  },
-  {emitPublic: false},
-  null
-]).build(function (config) {
-  config.devtool = false
-  if (this.isProduction) {
-    config.output.filename = '[name].umd.js'
-  }
-}).toConfig()
+module.exports = (env, argv) => Webpack5RecommendConfig
+  .newReactLibrary(env, argv, 'WbImageViewer')
+  .build(function (config) {
+    config.devtool = false
+    if (this.isProduction) {
+      config.output.filename = '[name].umd.js'
+    }
+  })
+  .toConfig()

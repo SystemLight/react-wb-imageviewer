@@ -1,6 +1,6 @@
 {
   "name": "react-wb-imageviewer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "lint:prettier": "prettier src/ -w",
     "lint:stylelint-prettier-check": "stylelint-config-prettier-check",
@@ -23,7 +23,9 @@
   "description": "Images viewer is a react component use in mobile website App, that function same as Weibo native viewer.",
   "main": "./dist/main.umd.js",
   "types": "./dist/main.d.ts",
-  "files": [],
+  "files": [
+    "dist/"
+  ],
   "bin": {},
   "author": "SystemLighht",
   "license": "MIT",
