@@ -1,24 +1,22 @@
-# react-wb-imageviewer
-
-[![NPM version](https://img.shields.io/npm/v/react-wb-imageviewer.svg)](https://www.npmjs.com/package/react-wb-imageviewer)
-
-> 基于react的一个超级简易的移动端图片查看器。
-
-### 安装
-
-```
-npm i react-wb-imageviewer
-```
-
-### 使用举例
-
-```
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <title>Title</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x5-fullscreen" content="false">
+  <meta name="full-screen" content="no">
+  <meta name="apple-mobile-web-app-capable" content="no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=no" />
+</head>
+<body>
 <div id="app"></div>
 
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://unpkg.com/react@latest/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
-<script src="./index.umd.js"></script>
+<script src="./index.bundle.js"></script>
 <script type="text/babel">
   function App() {
     let [open, setOpen] = React.useState(false)
@@ -43,4 +41,5 @@ npm i react-wb-imageviewer
     document.querySelector('#app')
   ).render(<App />)
 </script>
-```
+</body>
+</html>

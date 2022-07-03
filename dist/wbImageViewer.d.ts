@@ -6,13 +6,13 @@ declare type WbImageViewerProps = {
     onClose: () => void;
 };
 declare type LoadingImgProps = {
-    src?: string | null | "";
+    src?: string | null | '';
     alt?: string;
     loadingHeight: number | string;
 };
-export declare function Loading(props: {
-    className?: string;
-}): JSX.Element;
+export declare const Loading: React.FC<{
+    className?: string | undefined;
+}>;
 export declare const LoadingImg: React.ForwardRefExoticComponent<LoadingImgProps & React.RefAttributes<HTMLImageElement>>;
 export declare function WbImageViewer(props: WbImageViewerProps): JSX.Element;
 export {};
